@@ -4,14 +4,14 @@ simple tetris game
 python3 and turtle module
 
 surprisingly turtle is very powerful tool, either on assisting to learn different 
-concepts of programming and internal logic of the code or helping to write arcade games
-of course pygame would be another perfect option for game development but for classic arcade 
-games turtle is more than enough good.
+concepts of programming and internal logic of the code or helping to write simple games.
+of course pygame would be another perfect option, maybe better one for game development but for classic arcade 
+games turtle is more than enough.
 
-Specifically for this code, I use turtle to avoid writing matrix rotator!
+specially for this game, I use turtle to avoid writing matrix rotator!
 I used rotator function from turtle class.
 
-game have only one level and increase the speed only one time during the game, 
+game only have one level which increasees the game speed only one time during the game play. 
 I haven't write a score recorder function for it. 
 
 for sound I used pygame mixer with ogg files which I find very light and fast in term of using memory 
