@@ -2,11 +2,12 @@
 Simple implementation of The classic game Tetris.
 by Khashayar Nariman   19/Aug/2018
 Using python3
-using turtle module for graphics!
+turtle module for graphics!
+pygame.mixer for sound
 '''
 
 import turtle, random, os, time, copy, pygame
-from collections import Counter # very useful library 
+from collections import Counter 
 pygame.mixer.init()
 
 # all the sound files 
@@ -89,7 +90,7 @@ def welcome():
     p.clear()
 welcome_music.play()
 welcome()
-# Using separate function to draw the graphical board, 
+# stand alone function to draw the graphical board, 
 # the board is just for display, doesnt have any functionality
 def draw_board():
     p = turtle.Turtle()
@@ -119,7 +120,7 @@ def draw_board():
         p.right(90)
         p.forward(distance * row)
         p.right(90)
-
+#--------------------------
 # Class shape holds the attributes of shapes, using 0,1 to form the blocks
 # each shape represented as a 2D array 
 class Shape(turtle.Turtle):
@@ -148,7 +149,7 @@ class Shape(turtle.Turtle):
         self.bottom = 0
         self.x_move = 0
         self.y_move = 0
-        self.default_time = 200
+        self.default_time = 200 # tick
         self.tick = self.default_time
         self.temp_positions = []
         self.up_coming_shape = self.base
@@ -204,14 +205,16 @@ class Shape(turtle.Turtle):
         self.height = len(self.current_shape)
         self.width  = len(self.current_shape[0])
         self.first_shape = "on"
-    # Draw the shapes on the board in each time frame 
+    
+    # Draw method will display shapes on the board in each time frame 
+    # isntead of drawing i used stamp() method, 
     def draw(self):
         if len(self.temp_positions) != 0:
             self.temp_positions.clear()
             
         if self.next_shape == "on":
             self.on_board = "off"
-            if self.first_shape == "on":#-- The one time switch for the first move
+            if self.first_shape == "on":#-- one time switch for the first move
                 self.current_shape = random.choice(self.all_shapes)#-- one time direct choice from all_shapes 
                 self.first_shape = "off"
             else:
@@ -219,7 +222,7 @@ class Shape(turtle.Turtle):
             self.fillcolor("light green")
             self.next_shape = "off"
             self.on_board = "on"
-            #-- This is the next block, and we use it for preview as well 
+            #-- This is the next block, and we use it for preview in separate function
             self.up_coming_shape = random.choice(self.all_shapes)
         #-- Check if items in shape lists are 1 or 0.
         for r in range(len(self.current_shape)):
@@ -247,7 +250,7 @@ class Shape(turtle.Turtle):
         self.last_stamp = self.temp_positions[-1]
         screen.update()
 
-    
+    # Checking the evnts..
     def get_next_spot(self):
         if self.x_move == 0:
             return(self.xcor(), (self.ycor()-distance))
@@ -326,7 +329,7 @@ class Shape(turtle.Turtle):
                 self.r = 0
                 self.current_shape = self.i[self.r]
         return True 
-    # using keybinding (listen function) to move the shapes 
+    # using keybinding listen() function for event handling 
     def move_left(self):
         self.dropping = "off"
         self.x_move -= 20
@@ -339,7 +342,7 @@ class Shape(turtle.Turtle):
 
     def move_down(self):
         self.tick = 5
-# Class game keep attributes of the Game, cleaning the board, keep a track of all blocks and their coordinates 
+# Class game keep attributes of the Game, clean, clone and keep a track of all blocks and their coordinates 
 # on the board
 class Game(turtle.Turtle):
     def __init__(self, shape):
@@ -380,7 +383,7 @@ class Game(turtle.Turtle):
                 self.data_board.update({(x,y): 0})
 #-----------------------------------------------------------------------------------------
     
-    # Counts the number of blocks in each row 
+    # Counts the number of the blocks in each row using counter() function from collections module
     def check(self):
         try:
             for item, number in self.row_counter.items():
@@ -391,12 +394,14 @@ class Game(turtle.Turtle):
             pass
         
     def clean_board(self):
+        # i used different patterns and this one worked the way i expected
         # slowing the update screen a bit to having an animated style while cleaning the lines 
         # i used stamp() function to clean the blocks 
         # remove them from the board
         # give the rest of the blocks new coordination
         # clone the board using deep copy 
         # rebuild the board by new positions 
+        
         screen.tracer(2)
         self.fillcolor("black")
         count_g_board = 0
@@ -409,6 +414,9 @@ class Game(turtle.Turtle):
                 self.goto(i)
                 self.stamp()
                 self.g_board.remove(i)
+                # here i kept missing elements using loop, for example there was 8 blocks to clean,
+                # but every time code missed 1 or 2 of them
+                # maybe i had to use map to avoid the problem!
                 count_g_board += 1
                 #print("count_g_board:", count_g_board)
                 #time.sleep(0.001)
@@ -534,7 +542,7 @@ class Game(turtle.Turtle):
                     pass
         self.check()
 
-#--------------------- Creating objects, connecting the shape and game objects
+#--------------------- Creating objects, connecting the shape and game class
 draw_board()
 shape = Shape()
 game = Game(shape)
@@ -567,8 +575,10 @@ p2.write("Next", font = font)
 p2.setpos(100,40)
 p2.write("score", font = font)
 
-# display next coming shape
-# a reason to write it with separate function out of the class was cleaning the screen after each update 
+# display next upcoming shape
+# a reason to write it with separate function, out of the class was cleaning the screen after each update 
+# if we use it as method inside a class with clean() function turtle would erase the whole graphics inherited from
+# That class
 def preview():
     #time.sleep(1)
     p1.hideturtle()
@@ -588,8 +598,7 @@ def preview():
         p1.right(90)
         p1.forward(distance)
         p1.left(90)
-
-
+        
 #--- Key bindings and event handling 
 turtle.listen()
 turtle.onkey(shape.move_left,"Left")
@@ -600,12 +609,14 @@ turtle.onkey(shape.rotate,"Up")
 # Main function, contains the main game loop! 
 def main():
     running = True
-    back_ground_music.set_volume(0.1)
-    back_ground_music.play(-1)
+    back_ground_music.set_volume(0.1)#-- looping the music 
+    back_ground_music.play(-1)#-- volume control 
     while running:
-        preview()
+        preview() # Display the next upcoming shape
+        #-- Instead of using time module its much better to use builtin ontimer() function 
         turtle.ontimer(game.update(), t= shape.tick)
         turtle.ontimer(shape.update(),t= shape.tick)
+        #-- update the screen depending on screen.tracer() builtin function
         screen.update()
         shape.clear()
         p1.clear()
