@@ -3,10 +3,10 @@ simple tetris game
 
 python3 and turtle module
 
-surprisingly turtle is very powerful tool, either on assisting to learn different 
+surprisingly turtle is a very powerful tool, either on assisting to learn different 
 concepts of programming and internal logic of the code or helping to write simple games.
-of course pygame would be another perfect option, maybe better one for game development but for classic arcade 
-games turtle is more than enough.
+of course pygame would be a better option for game development but for classic arcade 
+games turtle will get the job done.
 
 specially for this game, I use turtle to avoid writing matrix rotator!
 I used rotator function from turtle class.
