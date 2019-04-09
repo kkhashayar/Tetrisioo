@@ -16,6 +16,15 @@ I haven't write a score recorder function for it.
 
 for sound I used pygame mixer with ogg files which I find very light and fast in term of using memory 
 and avoiding interruption with the code, the problem which sometimes can arise using winsound!.
+----
+comment at 9/4/2019
+Now that i look at the code i see some of the methods were experimental and in final stage i didnt even use them but i wouldnt remove the from code just as a reminder.
+in my opinion Code is very Bad!, The logic of the code is very complex, and i might repeated myself in many places.
+i had many mistakes in the structure which makes it very hard to follow the logic of the game.
+one reason for complex logic is the nature of using turtle stamp() method. 
+i hope some one can help me to refactor the game.
+
+
 
 
 
